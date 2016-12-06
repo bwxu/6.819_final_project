@@ -46,7 +46,9 @@ def batch_norm(x, n_out, phase_train):
 def cnn_model(x):
 
     phase_train = tf.placeholder(tf.bool, name='phase_train')
-
+    
+    ################## Conv 1 ##################
+    
     Wconv1_1 = weight_variable([3, 3, 1, 64])
     bconv1_1 = bias_variable([64])
 
@@ -59,6 +61,8 @@ def cnn_model(x):
 
     Rnorm1 = batch_norm(Rconv1_2, 64, phase_train)
     
+    ################## Conv 2 ##################
+    
     Wconv2_1 = weight_variable([3, 3, 1, 128])
     bconv2_1 = bias_variable([128])
     
@@ -67,8 +71,24 @@ def cnn_model(x):
     Wconv2_2 = weight_variable([3, 3, 1, 128])
     bconv2_2 = bias_variable([128])
     
-    Rconv2_2 = tf.nn.relu(conv(Rnorm1, Wconv2_1, 2) + bconv2_1)
+    Rconv2_2 = tf.nn.relu(conv(Rconv2_1, Wconv2_2, 2) + bconv2_2)
     
+    Rnorm2 = batch_norm(Rconv2_2, 128, phase_train)
+    
+    ################## Conv 3 ################## 
+
+    Wconv3_1 = weight_variable([3, 3, 1, 256])
+    bconv3_1 = variable_bias([256])
+    
+    Rconv3_1 = tf.nn.relu(conv(Rnorm1, Wconv3_1, 1) + bconv3_1)
+    
+    Wconv3_2 = weight_variable([3, 3, 1, 128])
+    bconv3_2 = bias_variable([128])
+    
+    Rconv3_2 = tf.nn.relu(conv(Rconv3_1, Wconv3_2, 2) + bconv3_2)
+    
+    Rnorm3 = batch_norm(Rconv3_2, 128, phase_train)
+        
     # TODO: write in the rest of the cnn
     
     return output
