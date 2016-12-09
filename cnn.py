@@ -238,7 +238,7 @@ def train_cnn():
 if __name__ == '__main__':
 
     # training_data = matrix with dimension [num_images, 256, 256, 1]
-    x = tf.placeholder('float', [None, 256*256])
+    x = tf.placeholder('float', [None, 1])
     y = tf.placeholder('float')
     train_cnn(x)
 
