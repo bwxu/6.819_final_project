@@ -63,12 +63,12 @@ def cnn_model(x):
     
     ################## Conv 2 ##################
     
-    Wconv2_1 = weight_variable([3, 3, 1, 128])
+    Wconv2_1 = weight_variable([3, 3, 64, 128])
     bconv2_1 = bias_variable([128])
     
     Rconv2_1 = tf.nn.relu(conv(Rnorm1, Wconv2_1, 1) + bconv2_1)
     
-    Wconv2_2 = weight_variable([3, 3, 1, 128])
+    Wconv2_2 = weight_variable([3, 3, 128, 128])
     bconv2_2 = bias_variable([128])
     
     Rconv2_2 = tf.nn.relu(conv(Rconv2_1, Wconv2_2, 2) + bconv2_2)
@@ -77,17 +77,17 @@ def cnn_model(x):
     
     ################## Conv 3 ################## 
 
-    Wconv3_1 = weight_variable([3, 3, 1, 256])
+    Wconv3_1 = weight_variable([3, 3, 128, 256])
     bconv3_1 = variable_bias([256])
     
     Rconv3_1 = tf.nn.relu(conv(Rnorm2, Wconv3_1, 1) + bconv3_1)
     
-    Wconv3_2 = weight_variable([3, 3, 1, 256])
+    Wconv3_2 = weight_variable([3, 3, 256, 256])
     bconv3_2 = bias_variable([256])
     
     Rconv3_2 = tf.nn.relu(conv(Rconv3_1, Wconv3_2, 1) + bconv3_2)
     
-    Wconv3_3 = weight_variable([3, 3, 1, 256])
+    Wconv3_3 = weight_variable([3, 3, 256, 256])
     bconv3_3 = bias_variable([256])
     
     Rconv3_3 = tf.nn.relu(conv(Rconv3_2, Wconv3_3, 2) + bconv3_3)
@@ -96,17 +96,17 @@ def cnn_model(x):
     
     ################## Conv 4 ################## 
     
-    Wconv4_1 = weight_variable([3, 3, 1, 512])
+    Wconv4_1 = weight_variable([3, 3, 256, 512])
     bconv4_1 = variable_bias([512])
     
     Rconv4_1 = tf.nn.relu(conv(Rnorm3, Wconv4_1, 1) + bconv4_1)
     
-    Wconv4_2 = weight_variable([3, 3, 1, 512])
+    Wconv4_2 = weight_variable([3, 3, 512, 512])
     bconv4_2 = bias_variable([512])
     
     Rconv4_2 = tf.nn.relu(conv(Rconv4_1, Wconv4_2, 1) + bconv4_2)
     
-    Wconv4_3 = weight_variable([3, 3, 1, 512])
+    Wconv4_3 = weight_variable([3, 3, 512, 512])
     bconv4_3 = bias_variable([512])
     
     Rconv4_3 = tf.nn.relu(conv(Rconv4_2, Wconv4_3, 1) + bconv4_3)
@@ -115,17 +115,17 @@ def cnn_model(x):
     
     ################## Conv 5 ################## 
     
-    Wconv5_1 = weight_variable([3, 3, 1, 512])
+    Wconv5_1 = weight_variable([3, 3, 512, 512])
     bconv5_1 = variable_bias([512])
     
     Rconv5_1 = tf.nn.relu(atrous_conv(Rnorm4, Wconv5_1, 1, 2) + bconv5_1)
     
-    Wconv5_2 = weight_variable([3, 3, 1, 512])
+    Wconv5_2 = weight_variable([3, 3, 512, 512])
     bconv5_2 = bias_variable([512])
     
     Rconv5_2 = tf.nn.relu(atrous_conv(Rconv5_1, Wconv5_2, 1, 2) + bconv5_2)
     
-    Wconv5_3 = weight_variable([3, 3, 1, 512])
+    Wconv5_3 = weight_variable([3, 3, 512, 512])
     bconv5_3 = bias_variable([512])
     
     Rconv5_3 = tf.nn.relu(atrous_conv(Rconv5_2, Wconv5_3, 1, 2) + bconv5_3)
@@ -134,17 +134,17 @@ def cnn_model(x):
     
     ################## Conv 6 ################## 
     
-    Wconv6_1 = weight_variable([3, 3, 1, 512])
+    Wconv6_1 = weight_variable([3, 3, 512, 512])
     bconv6_1 = variable_bias([512])
     
     Rconv6_1 = tf.nn.relu(atrous_conv(Rnorm5, Wconv6_1, 1, 2) + bconv6_1)
     
-    Wconv6_2 = weight_variable([3, 3, 1, 512])
+    Wconv6_2 = weight_variable([3, 3, 512, 512])
     bconv6_2 = bias_variable([512])
     
     Rconv6_2 = tf.nn.relu(atrous_conv(Rconv6_1, Wconv6_2, 1, 2) + bconv6_2)
     
-    Wconv6_3 = weight_variable([3, 3, 1, 512])
+    Wconv6_3 = weight_variable([3, 3, 512, 512])
     bconv6_3 = bias_variable([512])
     
     Rconv6_3 = tf.nn.relu(atrous_conv(Rconv6_2, Wconv6_3, 1, 2) + bconv6_3)
@@ -153,17 +153,17 @@ def cnn_model(x):
     
     ################## Conv 7 ################## 
     
-    Wconv7_1 = weight_variable([3, 3, 1, 512])
+    Wconv7_1 = weight_variable([3, 3, 512, 512])
     bconv7_1 = variable_bias([512])
     
     Rconv7_1 = tf.nn.relu(conv(Rnorm6, Wconv7_1, 1) + bconv7_1)
     
-    Wconv7_2 = weight_variable([3, 3, 1, 512])
+    Wconv7_2 = weight_variable([3, 3, 512, 512])
     bconv7_2 = bias_variable([512])
     
     Rconv7_2 = tf.nn.relu(conv(Rconv7_1, Wconv7_2, 1) + bconv7_2)
     
-    Wconv7_3 = weight_variable([3, 3, 1, 512])
+    Wconv7_3 = weight_variable([3, 3, 512, 512])
     bconv7_3 = bias_variable([512])
     
     Rconv7_3 = tf.nn.relu(conv(Rconv7_2, Wconv7_3, 1) + bconv7_3)
@@ -172,17 +172,17 @@ def cnn_model(x):
     
     ################## Conv 8 ################## 
     
-    Wconv8_1 = weight_variable([4, 4, 1, 512])
+    Wconv8_1 = weight_variable([4, 4, 512, 512])
     bconv8_1 = variable_bias([512])
     
-    Rconv8_1 = tf.nn.relu(conv(Rnorm7, Wconv8_1, 2) + bconv8_1)
+    Rconv8_1 = tf.nn.relu(deconv(Rnorm7, Wconv8_1, 2, 1) + bconv8_1)
     
-    Wconv8_2 = weight_variable([3, 3, 1, 512])
+    Wconv8_2 = weight_variable([3, 3, 512, 512])
     bconv8_2 = bias_variable([512])
     
     Rconv8_2 = tf.nn.relu(conv(Rconv8_1, Wconv8_2, 1) + bconv8_2)
     
-    Wconv8_3 = weight_variable([3, 3, 1, 512])
+    Wconv8_3 = weight_variable([3, 3, 512, 512])
     bconv8_3 = bias_variable([512])
     
     Rconv8_3 = tf.nn.relu(conv(Rconv8_2, Wconv8_3, 1) + bconv8_3)  
