@@ -205,7 +205,7 @@ def cnn_model(x):
     
     convD = atrous_conv(softmax_out, WconvD, 1, 1) + bconvD
     
-    return output
+    return convD
 
 
 # training and evaluating, but not for our case
