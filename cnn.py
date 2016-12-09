@@ -187,7 +187,23 @@ def cnn_model(x):
     
     Rconv8_3 = tf.nn.relu(conv(Rconv8_2, Wconv8_3, 1) + bconv8_3)  
     
-    # TODO: write in the rest of the cnn
+    ################## Softmax Layer ##################
+    
+    WconvS_313 = weight_variable([1, 1, 512, 313])
+    bconvS_313 = weight_variable([313])
+    
+    convS_313 = conv(Rconv8_3, WconvS_313) + bconvS_313
+    
+    WconvS_scale = weight_variable([1, 313])
+    
+    softmax_out = tf.nn.softmax(f.mul(convS_313, WconvS_scale))
+    
+    ################## Decoding ##################
+    
+    WconvD = weight_variable([1, 1, 313, 2])
+    bconvD = weight_variable([2])
+    
+    convD = atrous_conv(softmax_out, WconvD, 1, 1) + bconvD
     
     return output
 
