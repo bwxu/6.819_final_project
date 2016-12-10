@@ -1,4 +1,5 @@
 import tensorflow as tf
+import getdata
 
 def weight_variable(shape):
     initial = tf.truncated_normal(shape, stddev=0.1)
@@ -238,8 +239,9 @@ def train_cnn(x, y_):
 if __name__ == '__main__':
 
     # training_data = matrix with dimension [num_images, 256, 256, 1]
-    x = tf.placeholder('float', [10, 256, 256, 1])
-    y = tf.placeholder('float', [10, 256, 256, 3])
+    # x = tf.placeholder('float', [10, 256, 256, 1])
+    # y = tf.placeholder('float', [10, 256, 256, 3])
+    x, y = getdata.read_data()
     train_cnn(x, y)
 
     
