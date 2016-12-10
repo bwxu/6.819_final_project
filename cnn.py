@@ -1,24 +1,24 @@
 import tensorflow as tf
 
 def weight_variable(shape):
-	initial = tf.truncated_normal(shape, stddev=0.1)
-	return tf.Variable(initial)
+    initial = tf.truncated_normal(shape, stddev=0.1)
+    return tf.Variable(initial)
 
 def bias_variable(shape):
-	initial = tf.constant(0.1, shape=shape)
-	return tf.Variable(initial)
+    initial = tf.constant(0.1, shape=shape)
+    return tf.Variable(initial)
 
 def atrous_conv(x, W, stride, dilation):
-	return tf.nn.atrous_conv2d(x, W, strides=[1, stride, stride, 1],
-		dilation, 'SAME')
+    return tf.nn.atrous_conv2d(x, W,
+        rate=dilation, padding='SAME')
 
 def conv(x, W, stride):
-	return tf.nn.conv2d(x, W, strides=[1, stride, stride, 1],
-		'SAME')
+    return tf.nn.conv2d(x, W, strides=[1, stride, stride, 1],
+        padding='SAME')
 
 def deconv(x, W, stride, dopad):
-	return tf.nn.deconv2d(x, W, strides=[1, stride, stride, 1],
-		                'SAME' if dopad else 'VALID')
+    return tf.nn.conv2d_transpose(x, W, [512, 512, 512, 512], strides=[1, stride, stride, 1],
+                        padding='SAME' if dopad else 'VALID')
 
 def batch_norm(x, n_out, phase_train):
     with tf.variable_scope('bn'):
@@ -78,7 +78,7 @@ def cnn_model(x):
     ################## Conv 3 ################## 
 
     Wconv3_1 = weight_variable([3, 3, 128, 256])
-    bconv3_1 = variable_bias([256])
+    bconv3_1 = bias_variable([256])
     
     Rconv3_1 = tf.nn.relu(conv(Rnorm2, Wconv3_1, 1) + bconv3_1)
     
@@ -97,7 +97,7 @@ def cnn_model(x):
     ################## Conv 4 ################## 
     
     Wconv4_1 = weight_variable([3, 3, 256, 512])
-    bconv4_1 = variable_bias([512])
+    bconv4_1 = bias_variable([512])
     
     Rconv4_1 = tf.nn.relu(conv(Rnorm3, Wconv4_1, 1) + bconv4_1)
     
@@ -116,7 +116,7 @@ def cnn_model(x):
     ################## Conv 5 ################## 
     
     Wconv5_1 = weight_variable([3, 3, 512, 512])
-    bconv5_1 = variable_bias([512])
+    bconv5_1 = bias_variable([512])
     
     Rconv5_1 = tf.nn.relu(atrous_conv(Rnorm4, Wconv5_1, 1, 2) + bconv5_1)
     
@@ -135,7 +135,7 @@ def cnn_model(x):
     ################## Conv 6 ################## 
     
     Wconv6_1 = weight_variable([3, 3, 512, 512])
-    bconv6_1 = variable_bias([512])
+    bconv6_1 = bias_variable([512])
     
     Rconv6_1 = tf.nn.relu(atrous_conv(Rnorm5, Wconv6_1, 1, 2) + bconv6_1)
     
@@ -154,7 +154,7 @@ def cnn_model(x):
     ################## Conv 7 ################## 
     
     Wconv7_1 = weight_variable([3, 3, 512, 512])
-    bconv7_1 = variable_bias([512])
+    bconv7_1 = bias_variable([512])
     
     Rconv7_1 = tf.nn.relu(conv(Rnorm6, Wconv7_1, 1) + bconv7_1)
     
@@ -173,7 +173,7 @@ def cnn_model(x):
     ################## Conv 8 ################## 
     
     Wconv8_1 = weight_variable([4, 4, 512, 512])
-    bconv8_1 = variable_bias([512])
+    bconv8_1 = bias_variable([512])
     
     Rconv8_1 = tf.nn.relu(deconv(Rnorm7, Wconv8_1, 2, 1) + bconv8_1)
     
@@ -211,8 +211,8 @@ def cnn_model(x):
 # training and evaluating, but not for our case
 # https://www.tensorflow.org/versions/r0.12/tutorials/mnist/pros/index.html#convolution-and-pooling
 
-def train_cnn():
-    prediction = neural_network_model(x)
+def train_cnn(x, y_):
+    prediction = cnn_model(x)
     cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(prediction, y_))
     train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
     
@@ -238,7 +238,9 @@ def train_cnn():
 if __name__ == '__main__':
 
     # training_data = matrix with dimension [num_images, 256, 256, 1]
-    x = tf.placeholder('float', [None, 1])
-    y = tf.placeholder('float')
-    train_cnn(x)
+    x = tf.placeholder('float', [10, 256, 256, 1])
+    y = tf.placeholder('float', [10, 256, 256, 3])
+    train_cnn(x, y)
+
+    
 
