@@ -36,6 +36,8 @@ def get_arrays():
 
         L_arr.append(L)
         AB_arr.append(AB)
+        
+        count += 1
     return L_arr, AB_arr
 
 def save_data():
@@ -54,7 +56,7 @@ def read_data_from_file():
 def read_data_directly():
     L_arr, AB_arr = get_arrays()
     L_var = tf.Variable(np.asarray(L_arr).astype(np.float32))
-    AB_var = tf.Variable(np.asarray(L_arr).astype(np.float32))
+    AB_var = tf.Variable(np.asarray(AB_arr).astype(np.float32))
     return L_var, AB_var
 
 if __name__ == "__main__":
