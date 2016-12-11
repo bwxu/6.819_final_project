@@ -1,10 +1,11 @@
 % location of color images within data folder
 image_folder = 'val_256'; % change this parameter to the relevant folder
-file_path = strcat('data\', image_folder, '\');
+file_path = strcat('data/', image_folder, '/');
+
 files = dir(strcat(file_path, '*.jpg'));
 
 % location of folder generated bw images
-bw_file_path = strcat('data\', image_folder, '_bw\');
+bw_file_path = strcat('data/', image_folder, '_bw/');
 mkdir(bw_file_path);
 
 for i = 1 : length(files)
