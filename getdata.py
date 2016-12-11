@@ -36,7 +36,6 @@ def get_arrays():
 
         L_arr.append(L)
         AB_arr.append(AB)
-        
         count += 1
     return L_arr, AB_arr
 
