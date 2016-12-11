@@ -6,16 +6,21 @@ import pickle
 import numpy as np
 from skimage import io, color
 
-IMAGE_DIR = "data/val_256/*.jpg"
+MAX_IMAGES = 1
+IMAGE_DIR = "/media/bkhadka/gg/869_pics/val_256/*.jpg"
 IN_FILE = "data-in.pickle"
 OUT_FILE = "data-out.pickle"
 
 def save_data():
     L_arr = []
     AB_arr = []
-
+    count = 0
     for name in glob.glob(IMAGE_DIR):
+        if count == MAX_IMAGES:
+            break
+        
         rgb = io.imread(name)
+        print name, len(rgb), len(rgb[0]), len(rgb[0][0])
         lab = color.rgb2lab(rgb)
         L = []
         AB = []
