@@ -7,42 +7,45 @@ import numpy as np
 from skimage import io, color
 
 IMAGE_DIR = "data/val_256/*.jpg"
-BW_FILE = "data-bw.pickle"
-LAB_FILE = "data-lab.pickle"
+IN_FILE = "data-in.pickle"
+OUT_FILE = "data-out.pickle"
 
 def save_data():
-    bw_arr = []
-    lab_arr = []
+    L_arr = []
+    AB_arr = []
 
     for name in glob.glob(IMAGE_DIR):
         rgb = io.imread(name)
         lab = color.rgb2lab(rgb)
-        bw = color.rgb2grey(rgb)
-        bw_new = []
-        
-        # make the shape 256 by 256 by 1 lol
-        for i in range(len(bw)):
-            arr = []
-            for j in range(len(bw)):
-                arr.append([bw[i][j]])
-            bw_new.append(arr)
+        L = []
+        AB = []
 
-        bw_arr.append(bw_new)
-        lab_arr.append(lab)
+        # make the shapes correct
+        for i in range(len(lab)):
+            arr_l = []
+            arr_ab = []
+            for j in range(len(lab)):
+                arr_l.append([lab[i][j][0]])
+                arr_ab.append([lab[i][j][1], lab[i][j][2]])
+            L.append(arr_l)
+            AB.append(arr_ab)
 
-    pickle.dump(bw_arr, open(BW_FILE, "w"))
-    pickle.dump(lab_arr, open(LAB_FILE, "w"))
+        L_arr.append(L)
+        AB_arr.append(AB)
+
+    pickle.dump(L_arr, open(IN_FILE, "w"))
+    pickle.dump(AB_arr, open(OUT_FILE, "w"))
 
 def read_data():
-    f = open(BW_FILE, "r")
-    bw = pickle.load(f)
-    f = open(LAB_FILE, "r")
+    f = open(IN_FILE, "r")
+    L = pickle.load(f)
+    f = open(OUT_FILE, "r")
     lab = pickle.load(f)
-    bw_var = tf.Variable(np.array(bw).astype(np.float32))
+    L_var = tf.Variable(np.array(L).astype(np.float32))
     lab_var = tf.Variable(np.array(lab).astype(np.float32))
-    return bw_var, lab_var
+    return L_var, lab_var
 
 save_data()
-bw, lab = read_data()
-print bw.get_shape().as_list()
-print lab.get_shape().as_list()
+x, y = read_data()
+print x.get_shape().as_list()
+print y.get_shape().as_list()
