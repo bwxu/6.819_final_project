@@ -45,7 +45,6 @@ def batch_norm(x, n_out, phase_train):
 # https://github.com/richzhang/colorization/blob/master/models/colorization_train_val_v2.prototxt
 
 def cnn_model(x):
-
     phase_train = tf.placeholder(tf.bool, name='phase_train')
     
     ################## Conv 1 ##################
@@ -193,11 +192,11 @@ def cnn_model(x):
     WconvS_313 = weight_variable([1, 1, 512, 313])
     bconvS_313 = weight_variable([313])
     
-    convS_313 = conv(Rconv8_3, WconvS_313) + bconvS_313
+    convS_313 = conv(Rconv8_3, WconvS_313, 1) + bconvS_313
     
     WconvS_scale = weight_variable([1, 313])
     
-    softmax_out = tf.nn.softmax(f.mul(convS_313, WconvS_scale))
+    softmax_out = tf.nn.softmax(tf.mul(convS_313, WconvS_scale))
     
     ################## Decoding ##################
     

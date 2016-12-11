@@ -45,7 +45,9 @@ def read_data():
     lab_var = tf.Variable(np.array(lab).astype(np.float32))
     return L_var, lab_var
 
-save_data()
-x, y = read_data()
-print x.get_shape().as_list()
-print y.get_shape().as_list()
+if __name__ == "__main__":
+    save_data()
+    x, y = read_data()
+    print x.get_shape().as_list()
+    print y.get_shape().as_list()
+
