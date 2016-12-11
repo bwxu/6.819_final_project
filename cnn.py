@@ -248,7 +248,6 @@ def cnn_model(x):
 
 def train_cnn(x, y_):
     prediction = cnn_model(x)
-    return
     cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(prediction, y_))
     train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
     
