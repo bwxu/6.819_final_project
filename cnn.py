@@ -1,5 +1,16 @@
 import tensorflow as tf
 import getdata
+'''
+     \      ,    I'M RICHARD STALLMAN AND I DON'T WEAR SHOES IN PUBLIC
+     l\   ,/     BECAUSE NO ONE TAUGHT ME HOW TO BEHAVE               
+._   `|] /j                                                           
+ `\\, \|f7 _,/'                                                       
+   "`=,k/,x-'                                                         
+    ,z/fY-=-                                                          
+  -'" .y \                                                            
+      '   \itz   OR WASH FOR THAT MATTER                              
+
+'''
 
 def weight_variable(shape):
     initial = tf.truncated_normal(shape, stddev=0.1)
