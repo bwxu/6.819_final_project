@@ -33,16 +33,14 @@ def save_data():
         L_arr.append(L)
         AB_arr.append(AB)
 
-    pickle.dump(L_arr, open(IN_FILE, "w"))
-    pickle.dump(AB_arr, open(OUT_FILE, "w"))
+    np.save(open(IN_FILE, "w"), L_arr)
+    np.save(open(OUT_FILE, "w"), AB_arr)
 
 def read_data():
-    f = open(IN_FILE, "r")
-    L = pickle.load(f)
-    f = open(OUT_FILE, "r")
-    lab = pickle.load(f)
-    L_var = tf.Variable(np.array(L).astype(np.float32))
-    lab_var = tf.Variable(np.array(lab).astype(np.float32))
+    L = np.load(open(IN_FILE, "r"))
+    lab = np.load(open(OUT_FILE, "r"))
+    L_var = tf.Variable(L.astype(np.float32))
+    lab_var = tf.Variable(lab.astype(np.float32))
     return L_var, lab_var
 
 if __name__ == "__main__":
