@@ -478,12 +478,13 @@ layer {
   param {lr_mult: 0 decay_mult: 0}
   param {lr_mult: 0 decay_mult: 0}
 }
+
 # *****************
 # ***** conv8 *****
 # *****************
 layer {
   name: "conv8_1"
-  type: "Deconvolution"
+  type: "Convolution"
   bottom: "conv7_3norm"
   top: "conv8_1"
   convolution_param {
