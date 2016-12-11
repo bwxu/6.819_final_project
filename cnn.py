@@ -58,7 +58,16 @@ def batch_norm(x, n_out, phase_train):
 def cnn_model(x):
     phase_train = tf.placeholder(tf.bool, name='phase_train')
     BATCH_SIZE = int(list(x.get_shape())[0])
-    print 'Batch Size is ' + str(BATCH_SIZE)
+
+### testing shit
+
+    W = weight_variable([3, 3, 1, 2])
+
+    result = conv(x, W, 1)
+
+    return result
+
+### end testing shit
 
     ################## Conv 1 ##################
     
@@ -76,7 +85,7 @@ def cnn_model(x):
     print Rnorm1.get_shape()
     
     print 'END LAYER 1'
-    
+
     ################## Conv 2 ##################
     
     Wconv2_1 = weight_variable([3, 3, 64, 128])
@@ -247,37 +256,31 @@ def cnn_model(x):
 # training and evaluating, but not for our case
 # https://www.tensorflow.org/versions/r0.12/tutorials/mnist/pros/index.html#convolution-and-pooling
 
-def train_cnn(x, y):
+def train_cnn():
+    batch_size = 1
+    print 'BATCH SIZE IS ' + str(batch_size)
+    x = tf.placeholder('float', [batch_size, 256, 256, 1])
+    y = tf.placeholder('float', [batch_size, 256, 256, 2])
     prediction = cnn_model(x)
     square_loss = tf.reduce_sum(tf.square(prediction-y))
     train_step = tf.train.AdamOptimizer().minimize(square_loss)
     
-    correct_prediction = tf.equal(tf.argmax(prediction,1), tf.argmax(y,1))
-    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-    
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
-        for i in range(20000):
-            batch = mnist.train.next_batch(50) 
-            
-            if i%100 == 0:
-                train_accuracy = accuracy.eval(feed_dict={
-                    x:batch[0], y: batch[1], keep_prob: 1.0})
-            
-            print("step %d, training accuracy %g"%(i, train_accuracy))
-
-            train_step.run(feed_dict={x: batch[0], y: batch[1], keep_prob: 0.5})
-
-        print("test accuracy %g"%accuracy.eval(feed_dict={
-            x: mnist.test.images, y_: mnist.test.labels, keep_prob: 1.0}))
+        a, b = getdata.read_data_directly()
+        num_examples = a.shape[0]
+        for i in range(int(num_examples/batch_size)):
+            x_val = a[i*batch_size:(i+1)*batch_size,:,:,:]
+            y_val = b[i*batch_size:(i+1)*batch_size,:,:,:]
+            _, loss_val = sess.run([train_step, square_loss], feed_dict={x: x_val , y: y_val})
+            print 'BATCH NUMBER: ' + str(i+1), 'IMAGES TRAINED: ' + str((i+1)*batch_size), 'LOSS VALUE: ' + str(loss_val)
         
 if __name__ == '__main__':
 
-    # training_data = matrix with dimension [num_images, 256, 256, 1]
-    # x = tf.placeholder('float', [10, 256, 256, 1])
-    # y = tf.placeholder('float', [10, 256, 256, 3])
-    x, y = getdata.read_data()
-    train_cnn(x, y)
+    #training_data = matrix with dimension [num_images, 256, 256, 1]
+    #x = tf.placeholder('float', [10, 256, 256, 1])
+    #y = tf.placeholder('float', [10, 256, 256, 2])
+    train_cnn()
 
     
 
