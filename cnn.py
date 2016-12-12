@@ -261,15 +261,13 @@ def cnn_model(x):
 def save_image(lab, image_name):
     scaled_lab = exposure.rescale_intensity(lab, in_range=(np.amin(lab), np.amax(lab)))
     rgb = color.lab2rgb(scaled_lab)
-    print 'RGB' + str(rgb.shape)
-    print rgb
+    print 'red'
+    print rgb[:,:,0]
+    print 'green'
+    print rgb[:,:,1]
+    print 'blue'
+    print rgb[:,:,2]
     misc.imsave(image_name, rgb)
-    return
-    im = Image.new("RGB", (rgb.shape[0], rgb.shape[1]))
-    for i in range(lab.shape[0]):
-        for j in range(lab.shape[1]):
-            im[i, j] = (rgb[i][j][0], rgb[i][j][1], rgb[i][j][2])
-    im.save(image_name)
 
 
 # training and evaluating, but not for our case
@@ -277,7 +275,6 @@ def save_image(lab, image_name):
 
 def train_cnn():
     batch_size = 1
-    print 'BATCH SIZE IS ' + str(batch_size)
     x = tf.placeholder('float', [batch_size, 256, 256, 1])
     y = tf.placeholder('float', [batch_size, 256, 256, 2])
     prediction = cnn_model(x)
@@ -288,9 +285,11 @@ def train_cnn():
         sess.run(tf.global_variables_initializer())
         
         # Get the Lab values of each of the images
+        print 'READING IMAGES...'
         a, b = getdata.read_data_directly()
         num_examples = a.shape[0]
         
+        print 'TRAINING NEURAL NET...'
         num_epochs = 10
         for epoch in range(num_epochs):
             loss_val = 0
@@ -301,16 +300,11 @@ def train_cnn():
             print 'EPOCH: ' + str(epoch+1), 'LOSS VALUE: ' + str(loss_val)
         
         test_x = a[[0],:,:,:]
-        print test_x.shape
         test_y = sess.run(prediction, feed_dict={x: test_x})
-        print test_y.shape
         test_lab = np.concatenate((test_x, test_y), axis=3)
-        print test_lab.shape
         test_lab = test_lab[0,:,:,:]
-        print test_lab.shape
         save_image(test_lab, 'prediction.jpg')
-        actual_lab = np.concatenate((a[0,:,:,:], b[0,:,:,:]), axis = 3)
-        print actual_lab.shape
+        actual_lab = np.concatenate((a[0,:,:,:], b[0,:,:,:]), axis = 2)
         save_image(actual_lab, 'actual.jpg')
         
 if __name__ == '__main__':
