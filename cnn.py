@@ -1,5 +1,9 @@
 import tensorflow as tf
+import numpy as np
 import getdata
+from skimage import io, color, exposure
+from PIL import Image
+
 '''
      \      ,    I'M RICHARD STALLMAN AND I DON'T WEAR SHOES IN PUBLIC
      l\   ,/     BECAUSE NO ONE TAUGHT ME HOW TO BEHAVE               
@@ -253,6 +257,19 @@ def cnn_model(x):
     return convD
 
 
+def save_image(lab, image_name):
+    scaled_lab = exposure.rescale_intensity(lab, in_range=(np.amin(lab), np.amax(lab)))
+    print scaled_lab
+    rgb = color.lab2rgb(scaled_lab)
+    print 'RGB'
+    print rgb.shape
+    im = Image.new("RGB", (rgb.shape[0], rgb.shape[1]))
+    for i in range(lab.shape[0]):
+        for j in range(lab.shape[1]):
+            im[i][j] = (rgb[i][j][0], rgb[i][j][1], rgb[i][j][2])
+    im.save(image_name)
+
+
 # training and evaluating, but not for our case
 # https://www.tensorflow.org/versions/r0.12/tutorials/mnist/pros/index.html#convolution-and-pooling
 
@@ -267,13 +284,32 @@ def train_cnn():
     
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
+        
+        # Get the Lab values of each of the images
         a, b = getdata.read_data_directly()
         num_examples = a.shape[0]
-        for i in range(int(num_examples/batch_size)):
-            x_val = a[i*batch_size:(i+1)*batch_size,:,:,:]
-            y_val = b[i*batch_size:(i+1)*batch_size,:,:,:]
-            _, loss_val = sess.run([train_step, square_loss], feed_dict={x: x_val , y: y_val})
-            print 'BATCH NUMBER: ' + str(i+1), 'IMAGES TRAINED: ' + str((i+1)*batch_size), 'LOSS VALUE: ' + str(loss_val)
+        
+        num_epochs = 10
+        for epoch in range(num_epochs):
+            loss_val = 0
+            for i in range(int(num_examples/batch_size)):
+                x_val = a[i*batch_size:(i+1)*batch_size,:,:,:]
+                y_val = b[i*batch_size:(i+1)*batch_size,:,:,:]
+                _, loss_val = sess.run([train_step, square_loss], feed_dict={x: x_val , y: y_val})
+            print 'EPOCH: ' + str(epoch+1), 'LOSS VALUE: ' + str(loss_val)
+        
+        test_x = a[[0],:,:,:]
+        print test_x.shape
+        test_y = sess.run(prediction, feed_dict={x: test_x})
+        print test_y.shape
+        test_lab = np.concatenate((test_x, test_y), axis=3)
+        print test_lab.shape
+        test_lab = test_lab[0,:,:,:]
+        print test_lab.shape
+        save_image(test_lab, 'prediction.jpg')
+        actual_lab = np.concatenate((a[[0],:,:,:], b[[0],:,:,:]), axis = 3)
+        print actual_lab.shape
+        save_image(actual_lab, 'actual.jpg')
         
 if __name__ == '__main__':
 
