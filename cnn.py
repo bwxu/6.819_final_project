@@ -67,14 +67,16 @@ def cnn_model(x):
 ### testing shit
 
     W = weight_variable([3, 3, 1, 2])
+    b = weight_variable([2])
 
-    result = conv(x, W, 1)
+    conv1 = tf.nn.relu(conv(x, W, 1) + b)
 
-    #W2 = weight_variable([3, 3, 2, 2])
+    W2 = weight_variable([1, 1, 2, 2])
+    b2 = weight_variable([2])
     
-    #result = conv(result, W2, 1)
+    conv2 = conv(conv1, W2, 1) + b2
 
-    return result
+    return conv2
 
 ### end testing shit
 
