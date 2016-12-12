@@ -7,7 +7,7 @@ import numpy as np
 from skimage import io, color
 
 MAX_IMAGES = 100
-IMAGE_DIR = "/media/bkhadka/gg/869_pics/val_256/*.jpg"
+IMAGE_DIR = "/home/bkhadka/6.819/DATA/*.jpg"
 IN_FILE = "data-in.pickle"
 OUT_FILE = "data-out.pickle"
 
@@ -16,9 +16,12 @@ def get_arrays():
     AB_arr = []
     count = 0
     for name in glob.glob(IMAGE_DIR):
+        print count
         if count == MAX_IMAGES:
             break
         rgb = io.imread(name)
+        if len(rgb.shape) != 3:
+            continue
         print name, len(rgb), len(rgb[0]), len(rgb[0][0])
         lab = color.rgb2lab(rgb)
         L = []

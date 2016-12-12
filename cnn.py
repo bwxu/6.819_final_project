@@ -64,7 +64,7 @@ def cnn_model(x):
     phase_train = tf.placeholder(tf.bool, name='phase_train')
     BATCH_SIZE = int(list(x.get_shape())[0])
 
-### testing shit
+### single layer cnn
 
     W = weight_variable([3, 3, 1, 2])
 
@@ -72,7 +72,7 @@ def cnn_model(x):
 
     return result
 
-### end testing shit
+### end single layer cnn
 
     ################## Conv 1 ##################
     
@@ -259,7 +259,7 @@ def cnn_model(x):
 
 
 def save_image(lab, image_name):
-    scaled_lab = exposure.rescale_intensity(lab, in_range=(np.amin(lab), np.amax(lab)))
+    scaled_lab = exposure.rescale_intensity(lab, in_range=(-10, 10))
     rgb = color.lab2rgb(scaled_lab)
     print 'red'
     print rgb[:,:,0]
@@ -290,12 +290,17 @@ def train_cnn():
         num_examples = a.shape[0]
         
         print 'TRAINING NEURAL NET...'
-        num_epochs = 10
+        num_epochs = 20
         for epoch in range(num_epochs):
             loss_val = 0
             for i in range(int(num_examples/batch_size)):
-                x_val = a[i*batch_size:(i+1)*batch_size,:,:,:]
-                y_val = b[i*batch_size:(i+1)*batch_size,:,:,:]
+                # first image not used for training
+                x_val = a[i*batch_size+1:(i+1)*batch_size+1,:,:,:]
+                if x_val.shape != (1, 256, 256, 1):
+                    continue
+                y_val = b[i*batch_size+1:(i+1)*batch_size+1,:,:,:]
+                if y_val.shape != (1, 256, 256, 2):
+                    continue
                 _, loss_val = sess.run([train_step, square_loss], feed_dict={x: x_val , y: y_val})
             print 'EPOCH: ' + str(epoch+1), 'LOSS VALUE: ' + str(loss_val)
         
