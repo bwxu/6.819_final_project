@@ -5,7 +5,6 @@
 Relevant Paper: https://arxiv.org/pdf/1603.08511.pdf
 
 Training Data (256 x 256): http://places2.csail.mit.edu/download.html
-On our device data is at: /media/bkhadka/gg/869_pics/val_256/
 
 # How to run convertToBW.m (NOT NECESSARY for running CNN code)
 
@@ -27,8 +26,8 @@ images.
 2. Open cnn.py and change num_epochs in train_cnn() to the number of iterations you want
 to train the cnn.
 
-3. Also in cnn.py, change the number 0 in a[[0],:,:,:] to change which image is the test
-image. By default, if the number 0 is unchanged, the test image will be the first image
+3. Also in cnn.py, change the value of image_num to change which image is the test
+image. By default, the image_num is 0, so the test image will be the first image
 which is read by the getdata function.
 
 4. Now, run cnn.py by calling 'python cnn.py'. The code will load the image data, train

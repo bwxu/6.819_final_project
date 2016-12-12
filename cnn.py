@@ -265,12 +265,6 @@ def cnn_model(x):
 def save_image(lab, image_name):
     scaled_lab = exposure.rescale_intensity(lab, in_range=(np.amin(lab), np.amax(lab)))
     rgb = color.lab2rgb(scaled_lab)
-    print 'red'
-    print rgb[:,:,0]
-    print 'green'
-    print rgb[:,:,1]
-    print 'blue'
-    print rgb[:,:,2]
     misc.imsave(image_name, rgb)
 
 
@@ -293,27 +287,34 @@ def train_cnn():
         a, b = getdata.read_data_directly()
         num_examples = a.shape[0]
         
+        image_num = 0
+
         print 'TRAINING NEURAL NET...'
         num_epochs = 20
         for epoch in range(num_epochs):
             loss_val = 0
             for i in range(int(num_examples/batch_size)):
-                # first image not used for training
-                x_val = a[i*batch_size+1:(i+1)*batch_size+1,:,:,:]
+                # don't train with test image
+                if image_num >= i*batch_size and image_num < (i+1)*batch_size:
+                    continue
+
+                x_val = a[i*batch_size:(i+1)*batch_size,:,:,:]
                 if x_val.shape != (1, 256, 256, 1):
                     continue
-                y_val = b[i*batch_size+1:(i+1)*batch_size+1,:,:,:]
+
+                y_val = b[i*batch_size:(i+1)*batch_size,:,:,:]
                 if y_val.shape != (1, 256, 256, 2):
                     continue
+
                 _, loss_val = sess.run([train_step, square_loss], feed_dict={x: x_val , y: y_val})
             print 'EPOCH: ' + str(epoch+1), 'LOSS VALUE: ' + str(loss_val)
-        
-        test_x = a[[0],:,:,:]
+
+        test_x = a[[image_num],:,:,:]
         test_y = sess.run(prediction, feed_dict={x: test_x})
         test_lab = np.concatenate((test_x, test_y), axis=3)
-        test_lab = test_lab[0,:,:,:]
+        test_lab = test_lab[image_num,:,:,:]
         save_image(test_lab, 'prediction.jpg')
-        actual_lab = np.concatenate((a[0,:,:,:], b[0,:,:,:]), axis = 2)
+        actual_lab = np.concatenate((a[image_num,:,:,:], b[image_num,:,:,:]), axis = 2)
         save_image(actual_lab, 'actual.jpg')
         
 if __name__ == '__main__':
