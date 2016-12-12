@@ -266,7 +266,7 @@ def save_image(lab, image_name):
     im = Image.new("RGB", (rgb.shape[0], rgb.shape[1]))
     for i in range(lab.shape[0]):
         for j in range(lab.shape[1]):
-            im[i][j] = (rgb[i][j][0], rgb[i][j][1], rgb[i][j][2])
+            im[i, j] = (rgb[i][j][0], rgb[i][j][1], rgb[i][j][2])
     im.save(image_name)
 
 
