@@ -3,6 +3,7 @@ import numpy as np
 import getdata
 from skimage import io, color, exposure
 from PIL import Image
+from scipy import misc
 
 '''
      \      ,    I'M RICHARD STALLMAN AND I DON'T WEAR SHOES IN PUBLIC
@@ -259,10 +260,11 @@ def cnn_model(x):
 
 def save_image(lab, image_name):
     scaled_lab = exposure.rescale_intensity(lab, in_range=(np.amin(lab), np.amax(lab)))
-    print scaled_lab
     rgb = color.lab2rgb(scaled_lab)
-    print 'RGB'
-    print rgb.shape
+    print 'RGB' + str(rgb.shape)
+    print rgb
+    misc.imsave(image_name, rgb)
+    return
     im = Image.new("RGB", (rgb.shape[0], rgb.shape[1]))
     for i in range(lab.shape[0]):
         for j in range(lab.shape[1]):
@@ -307,7 +309,7 @@ def train_cnn():
         test_lab = test_lab[0,:,:,:]
         print test_lab.shape
         save_image(test_lab, 'prediction.jpg')
-        actual_lab = np.concatenate((a[[0],:,:,:], b[[0],:,:,:]), axis = 3)
+        actual_lab = np.concatenate((a[0,:,:,:], b[0,:,:,:]), axis = 3)
         print actual_lab.shape
         save_image(actual_lab, 'actual.jpg')
         
