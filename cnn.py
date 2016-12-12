@@ -71,12 +71,22 @@ def cnn_model(x):
 
     conv1 = tf.nn.relu(conv(x, W, 1) + b)
 
-    W2 = weight_variable([1, 1, 2, 2])
-    b2 = weight_variable([2])
+    W2 = weight_variable([1, 1, 2, 4])
+    b2 = weight_variable([4])
     
-    conv2 = conv(conv1, W2, 1) + b2
+    conv2 = tf.nn.relu(conv(conv1, W2, 1) + b2)
 
-    return conv2
+    W3 = weight_variable([1, 1, 4, 2])
+    b3 = weight_variable([2])
+
+    conv3 = tf.nn.relu(conv(conv2, W3, 1) + b3)
+
+    W4 = weight_variable([1, 1, 2, 2])
+    b4 = weight_variable([2])
+
+    conv4 = conv(conv3, W4, 1) + b4
+
+    return conv4
 
 ### end testing shit
 
@@ -320,10 +330,6 @@ def train_cnn():
         save_image(actual_lab, 'actual.jpg')
         
 if __name__ == '__main__':
-
-    #training_data = matrix with dimension [num_images, 256, 256, 1]
-    #x = tf.placeholder('float', [10, 256, 256, 1])
-    #y = tf.placeholder('float', [10, 256, 256, 2])
     train_cnn()
 
     
