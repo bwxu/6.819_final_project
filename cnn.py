@@ -64,7 +64,7 @@ def cnn_model(x):
     phase_train = tf.placeholder(tf.bool, name='phase_train')
     BATCH_SIZE = int(list(x.get_shape())[0])
 
-### testing shit
+### testing 
 
     W = weight_variable([3, 3, 1, 2])
     b = weight_variable([2])
@@ -88,7 +88,7 @@ def cnn_model(x):
 
     return conv4
 
-### end testing shit
+### end testing 
 
     ################## Conv 1 ##################
     
@@ -302,9 +302,9 @@ def train_cnn():
         image_num = 0
 
         print 'TRAINING NEURAL NET...'
-        num_epochs = 20
+        num_epochs = 100
         for epoch in range(num_epochs):
-            loss_val = 0
+            epoch_loss = 0
             for i in range(int(num_examples/batch_size)):
                 # don't train with test image
                 if image_num >= i*batch_size and image_num < (i+1)*batch_size:
@@ -319,15 +319,16 @@ def train_cnn():
                     continue
 
                 _, loss_val = sess.run([train_step, square_loss], feed_dict={x: x_val , y: y_val})
-            print 'EPOCH: ' + str(epoch+1), 'LOSS VALUE: ' + str(loss_val)
+                epoch_loss += loss_val
+            print 'EPOCH: ' + str(epoch+1), 'LOSS VALUE: ' + str(epoch_loss)
 
         test_x = a[[image_num],:,:,:]
         test_y = sess.run(prediction, feed_dict={x: test_x})
         test_lab = np.concatenate((test_x, test_y), axis=3)
         test_lab = test_lab[image_num,:,:,:]
         save_image(test_lab, 'prediction.jpg')
-        actual_lab = np.concatenate((a[image_num,:,:,:], b[image_num,:,:,:]), axis = 2)
-        save_image(actual_lab, 'actual.jpg')
+        #actual_lab = np.concatenate((a[image_num,:,:,:], b[image_num,:,:,:]), axis = 2)
+        #save_image(actual_lab, 'actual.jpg')
         
 if __name__ == '__main__':
     train_cnn()
