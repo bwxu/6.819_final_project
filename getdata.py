@@ -18,7 +18,6 @@ def get_arrays():
     AB_arr = []
     count = 0
     for name in glob.glob(IMAGE_DIR):
-        print count
         if count == MAX_IMAGES:
             break
         rgb = io.imread(name)

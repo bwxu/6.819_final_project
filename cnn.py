@@ -58,23 +58,26 @@ def batch_norm(x, n_out, phase_train):
     return normed
 
 
+# https://github.com/richzhang/colorization/blob/master/models/colorization_train_val_v2.prototxt
+# github.com/richzhang/colorization/blob/master/models/colorization_deploy_v2.prototxt
 def cnn_model(x):
     phase_train = tf.placeholder(tf.bool, name='phase_train')
     BATCH_SIZE = int(list(x.get_shape())[0])
 
-    ### single layer cnn
+### testing shit
 
     W = weight_variable([3, 3, 1, 2])
 
     result = conv(x, W, 1)
 
+    #W2 = weight_variable([3, 3, 2, 2])
+    
+    #result = conv(result, W2, 1)
+
     return result
 
-    ### end single layer cnn
+### end testing shit
 
-    ### cnn as described in github.com/richzhang/colorization/blob/master/models/colorization_deploy_v2.prototxt
-    ### contains bug for loss function, so doesn't really work =(. 
-    
     ################## Conv 1 ##################
     
     Wconv1_1 = weight_variable([3, 3, 1, 64])
@@ -258,14 +261,22 @@ def cnn_model(x):
 
     return convD
 
-# saves lab value as image in current folder
+
 def save_image(lab, image_name):
     scaled_lab = exposure.rescale_intensity(lab, in_range=(np.amin(lab), np.amax(lab)))
     rgb = color.lab2rgb(scaled_lab)
+    print 'red'
+    print rgb[:,:,0]
+    print 'green'
+    print rgb[:,:,1]
+    print 'blue'
+    print rgb[:,:,2]
     misc.imsave(image_name, rgb)
 
 
-# method to train and test cnn
+# training and evaluating, but not for our case
+# https://www.tensorflow.org/versions/r0.12/tutorials/mnist/pros/index.html#convolution-and-pooling
+
 def train_cnn():
     batch_size = 1
     x = tf.placeholder('float', [batch_size, 256, 256, 1])
@@ -278,8 +289,6 @@ def train_cnn():
         sess.run(tf.global_variables_initializer())
         
         # Get the Lab values of each of the images
-        # Go to getdata.py to change the MAX_NUMBER of images to read
-        # and the IMAGE_DIR to the location of images on your computer
         print 'READING IMAGES...'
         a, b = getdata.read_data_directly()
         num_examples = a.shape[0]
@@ -289,7 +298,7 @@ def train_cnn():
         for epoch in range(num_epochs):
             loss_val = 0
             for i in range(int(num_examples/batch_size)):
-                # first image (test image) not used for training
+                # first image not used for training
                 x_val = a[i*batch_size+1:(i+1)*batch_size+1,:,:,:]
                 if x_val.shape != (1, 256, 256, 1):
                     continue
@@ -299,7 +308,6 @@ def train_cnn():
                 _, loss_val = sess.run([train_step, square_loss], feed_dict={x: x_val , y: y_val})
             print 'EPOCH: ' + str(epoch+1), 'LOSS VALUE: ' + str(loss_val)
         
-        # test image is first image read
         test_x = a[[0],:,:,:]
         test_y = sess.run(prediction, feed_dict={x: test_x})
         test_lab = np.concatenate((test_x, test_y), axis=3)
@@ -309,6 +317,10 @@ def train_cnn():
         save_image(actual_lab, 'actual.jpg')
         
 if __name__ == '__main__':
+
+    #training_data = matrix with dimension [num_images, 256, 256, 1]
+    #x = tf.placeholder('float', [10, 256, 256, 1])
+    #y = tf.placeholder('float', [10, 256, 256, 2])
     train_cnn()
 
     
