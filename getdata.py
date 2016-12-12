@@ -6,7 +6,9 @@ import pickle
 import numpy as np
 from skimage import io, color
 
+# Change this value to change the number of images you want to use in training
 MAX_IMAGES = 100
+# Change this to the directory where your images are located
 IMAGE_DIR = "/home/bkhadka/6.819/DATA/*.jpg"
 IN_FILE = "data-in.pickle"
 OUT_FILE = "data-out.pickle"
