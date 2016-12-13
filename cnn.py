@@ -57,14 +57,14 @@ def batch_norm(x, n_out, phase_train):
         normed = tf.nn.batch_normalization(x, mean, var, beta, gamma, 1e-3)
     return normed
 
-
+# This method contains our CNN model.
+# This method also contains the CNN architecture based off of Richard Zhang's paper
 # https://github.com/richzhang/colorization/blob/master/models/colorization_train_val_v2.prototxt
 # github.com/richzhang/colorization/blob/master/models/colorization_deploy_v2.prototxt
 def cnn_model(x):
     phase_train = tf.placeholder(tf.bool, name='phase_train')
     BATCH_SIZE = int(list(x.get_shape())[0])
 
-### testing 
 
     W = weight_variable([3, 3, 1, 2])
     b = weight_variable([2])
@@ -88,8 +88,7 @@ def cnn_model(x):
 
     return conv4
 
-### end testing 
-
+    # Here is the CNN implementation inspired from the paper
     ################## Conv 1 ##################
     
     Wconv1_1 = weight_variable([3, 3, 1, 64])
@@ -302,7 +301,7 @@ def train_cnn():
         image_num = 0
 
         print 'TRAINING NEURAL NET...'
-        num_epochs = 100
+        num_epochs = 10
         for epoch in range(num_epochs):
             epoch_loss = 0
             for i in range(int(num_examples/batch_size)):
@@ -311,21 +310,21 @@ def train_cnn():
                     continue
 
                 x_val = a[i*batch_size:(i+1)*batch_size,:,:,:]
-                if x_val.shape != (1, 256, 256, 1):
+                if x_val.shape != (batch_size, 256, 256, 1):
                     continue
 
                 y_val = b[i*batch_size:(i+1)*batch_size,:,:,:]
-                if y_val.shape != (1, 256, 256, 2):
+                if y_val.shape != (batch_size, 256, 256, 2):
                     continue
 
                 _, loss_val = sess.run([train_step, square_loss], feed_dict={x: x_val , y: y_val})
                 epoch_loss += loss_val
             print 'EPOCH: ' + str(epoch+1), 'LOSS VALUE: ' + str(epoch_loss)
 
-        test_x = a[[image_num],:,:,:]
+        test_x = a[image_num:image_num+batch_size,:,:,:]
         test_y = sess.run(prediction, feed_dict={x: test_x})
         test_lab = np.concatenate((test_x, test_y), axis=3)
-        test_lab = test_lab[image_num,:,:,:]
+        test_lab = test_lab[0,:,:,:]
         save_image(test_lab, 'prediction.jpg')
         #actual_lab = np.concatenate((a[image_num,:,:,:], b[image_num,:,:,:]), axis = 2)
         #save_image(actual_lab, 'actual.jpg')
